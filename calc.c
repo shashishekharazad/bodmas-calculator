@@ -14,7 +14,9 @@ int main(void)
   double result;
 
   printf("Enter the Expression: ");
+  //Read whole line until get \n character or new line (Entered)
   scanf("%[^\n]", expression);
+  // Pass whole expression to evaluate to be evaluated
   result = evaluate(expression);
   printf("Result = %.2lf\n", result);
   return 0;
@@ -22,12 +24,18 @@ int main(void)
 
 double evaluate(char expr[])
 {
-  double numbers[5]; int nsi = 0;
-  char operators[5]; int osi = 0;
-  char numbuf[16]; int nbi = 0;
-  char ch; int  i = 0;
+  //Devide expression into operator and number
+  double numbers[5];
+  int nsi = 0;
+  char operators[5];
+  int osi = 0;
+  char numbuf[16];
+  int nbi = 0;
+  char ch;
+  int  i = 0;
 
   while ((ch = expr[i]) != 0) {
+    //Check if the characters in expression are number 
     if (checknumber(ch))
     {
       numbuf[nbi++] = ch;
@@ -55,6 +63,7 @@ double evaluate(char expr[])
   return numbers[0];
 }
 
+//Function to check if the character is number or not
 char checknumber(char ch)
 {
   if ((ch >= '0' && ch <= '9') || ch == '.') {
@@ -64,6 +73,8 @@ char checknumber(char ch)
     return 0;
   }
 }
+
+//Assigning precedence to operators
 int precedence(char ch)
 {
   int precedence;
@@ -83,6 +94,7 @@ int precedence(char ch)
   return precedence;
 }
 
+//Calculate the expression
 double calculate(char moperator, double num1, double num2)
 {
   double result;
