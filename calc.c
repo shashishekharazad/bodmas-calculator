@@ -2,10 +2,13 @@
 #include<conio.h>
 #include<stdlib.h>
 #include <math.h>
-
+//a function to evaluate the expression
 double evaluate (char []);
+//a function to check and assigne the precedence to operators
 int precedence(char);
+//a function to calculate the numbers
 double calculate(char , double , double );
+//a function to check if the character is number or not
 char checknumber(char);
 
 int main(void)
@@ -14,9 +17,7 @@ int main(void)
   double result;
 
   printf("Enter the Expression: ");
-  //Read whole line until get \n character or new line (Entered)
   scanf("%[^\n]", expression);
-  // Pass whole expression to evaluate to be evaluated
   result = evaluate(expression);
   printf("Result = %.2lf\n", result);
   return 0;
@@ -24,46 +25,39 @@ int main(void)
 
 double evaluate(char expr[])
 {
-  //Devide expression into operator and number
-  double numbers[5];
-  int nsi = 0;
-  char operators[5];
-  int osi = 0;
-  char numbuf[16];
-  int nbi = 0;
-  char ch;
-  int  i = 0;
+  double nonDecNum[5]; int nIdx = 0;
+  char operators[5]; int oIdx = 0;
+  char decimalNum[16]; int fIdx = 0;
+  char ch; int  i = 0;
 
   while ((ch = expr[i]) != 0) {
-    //Check if the characters in expression are number 
     if (checknumber(ch))
     {
-      numbuf[nbi++] = ch;
+      decimalNum[fIdx++] = ch;
       if (!checknumber(expr[i + 1]))
       {
-        numbuf[nbi] = 0; nbi = 0;
-        sscanf(numbuf, "%lf", &numbers[nsi++]);
+        decimalNum[fIdx] = 0; fIdx = 0;
+        sscanf(decimalNum, "%lf", &nonDecNum[nIdx++]);
       }
     }
     else
     {
-      while ((osi > 0) && (precedence(ch) <= precedence(operators[osi - 1])))
+      while ((oIdx > 0) && (precedence(ch) <= precedence(operators[oIdx - 1])))
       {
-        numbers[nsi - 2] = calculate(operators[osi - 1], numbers[nsi - 2], numbers[nsi - 1]);
-        osi--; nsi--;
+        nonDecNum[nIdx - 2] = calculate(operators[oIdx - 1], nonDecNum[nIdx - 2], nonDecNum[nIdx - 1]);
+        oIdx--; nIdx--;
       }
-      operators[osi++] = ch;
+      operators[oIdx++] = ch;
     }
     i++;
   }
-  while (osi > 0) {
-    numbers[nsi - 2] = calculate(operators[osi - 1], numbers[nsi - 2], numbers[nsi - 1]);
-    osi--; nsi--;
+  while (oIdx > 0) {
+    nonDecNum[nIdx - 2] = calculate(operators[oIdx - 1], nonDecNum[nIdx - 2], nonDecNum[nIdx - 1]);
+    oIdx--; nIdx--;
   }
-  return numbers[0];
+  return nonDecNum[0];
 }
 
-//Function to check if the character is number or not
 char checknumber(char ch)
 {
   if ((ch >= '0' && ch <= '9') || ch == '.') {
@@ -73,28 +67,25 @@ char checknumber(char ch)
     return 0;
   }
 }
-
-//Assigning precedence to operators
 int precedence(char ch)
 {
-  int precedence;
+  int opPrecdence;
   switch (ch)
   {
     case '+':
     case '-':
-    precedence = 0;
+    opPrecdence = 0;
     break;
     case '*':
     case '/':
-    precedence = 1;
+    opPrecdence = 1;
     break;
     case '^':
-    precedence = 2;
+    opPrecdence = 2;
   }
-  return precedence;
+  return opPrecdence;
 }
 
-//Calculate the expression
 double calculate(char moperator, double num1, double num2)
 {
   double result;
@@ -116,7 +107,7 @@ double calculate(char moperator, double num1, double num2)
     result = pow(num1, num2);
     break;
     default:
-    printf("Invalid Operator\n");
+    printf("Invalid Operator!\n");
     exit(0);
   }
   return result;
